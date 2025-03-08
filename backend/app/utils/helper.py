@@ -1,12 +1,12 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 import io
 from fastapi import UploadFile
 import fitz  
 from docx import Document
 import json
 import re
-
+import pytz
 
 def generate_unique_filename(filename: str) -> str:
     """"
@@ -72,13 +72,40 @@ def extract_json_from_text(text: str) -> dict:
         raise ValueError("Invalid JSON format") from e
     
 
-# Extract personal information from json
-def extract_personal_information(data):
-    personal_information = [
-        data.get("name", ""),
-        data.get("email", ""),
-        data.get("phone", ""),
-        data.get("location", ""),
-    ]
-    
-    return personal_information
+# Convert to UTC datetime
+def convert_to_utc(datetime: datetime) -> datetime:
+    """
+    Convert a datetime string to UTC using the specified timezone.
+    """
+    return datetime.astimezone(pytz.UTC)
+
+# Format datetime to ISO 8601
+def format_datetime_to_iso(datetime_obj: datetime) -> str:
+    """
+    Format a datetime object to ISO 8601 format (%Y-%m-%dT%H:%M:%S).
+    """
+    return datetime_obj.strftime("%Y-%m-%dT%H:%M:%S")
+
+# Add hours to datetime
+def add_hours_to_datetime(datetime_obj: datetime, hours: int) -> datetime:
+    """
+    Add hours to a datetime object.
+    """
+    return datetime_obj + timedelta(hours=hours)
+
+# Add seconds to datetime
+def add_seconds_to_datetime(datetime_obj: datetime, seconds: int) -> datetime:
+    """
+    Add seconds to a datetime object.
+    """
+    return datetime_obj + timedelta(seconds=seconds)
+
+
+# generate unique name
+def generate_unique_name(name: str) -> str:
+    """
+    Generate a unique name using the current timestamp and a UUID.
+    """
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    unique_id = uuid.uuid4().hex[:12]
+    return f"{name}_{timestamp}_{unique_id}"

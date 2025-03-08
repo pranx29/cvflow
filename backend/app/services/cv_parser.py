@@ -88,9 +88,7 @@ async def parse_cv(file_content: io.BytesIO, file_name: str) -> CV:
         )
 
         # Parse the response
-        print(response.choices[0].message.content)
         parsed_data = extract_json_from_text(response.choices[0].message.content)
-
         return CV(**parsed_data)
     
     except json.JSONDecodeError:
@@ -99,5 +97,5 @@ async def parse_cv(file_content: io.BytesIO, file_name: str) -> CV:
 
         # return parsed_data
     except Exception as e:
-        logging.error(f"Error parsing CV: {e}")
+        logging.error(f"Unexpected eror in cv parsing: {e}")
         raise CVParseException(message="Error parsing CV file.")

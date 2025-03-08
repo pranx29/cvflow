@@ -53,3 +53,12 @@ class CV(BaseModel):
             "\n\n".join([f"{work.job_title} at {work.company} ({work.start_date} - {work.end_date}): {', '.join(work.responsibilities)}" for work in self.work_experience]),
             "\n\n".join([f"{proj.title}: {', '.join(proj.description)} (Tech: {', '.join(proj.technologies)})" for proj in self.projects]),
         ]
+    def toJson(self):
+        return {
+            "personal_information": self.personal_information.model_dump(),
+            "education": [edu.model_dump() for edu in self.education],
+            "qualifications": [qual.model_dump() for qual in self.qualifications],
+            "skills": self.skills.model_dump(),
+            "work_experience": [work.model_dump() for work in self.work_experience],
+            "projects": [proj.model_dump() for proj in self.projects],
+        }

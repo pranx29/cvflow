@@ -12,3 +12,18 @@ class CVParseException(Exception):
     def __init__(self, message="Failed to parse CV."):
         self.message = message
         super().__init__(self.message)
+
+class GoogleSheetsException(Exception):
+    def __init__(self, message="Failed to store data in Google Sheets."):
+        self.message = message
+        super().__init__(self.message)
+
+class WebhookException(Exception):
+    def __init__(self, message="Failed to send webhook."):
+        self.message = message
+        super().__init__(self.message)
+
+class EmailSchedulerException(Exception):
+    def __init__(self, message="Failed to schedule email."):
+        self.message = message
+        super().__init__(self.message)

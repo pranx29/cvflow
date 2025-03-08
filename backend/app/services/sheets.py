@@ -1,6 +1,7 @@
 from google.oauth2.service_account import Credentials
 import gspread
 from googleapiclient.errors import HttpError
+from utils.exceptions import GoogleSheetsException
 from core.config import settings
 import logging
 from schemas.cv import CV
@@ -18,6 +19,8 @@ def store_in_google_sheets(data, sheet_id):
         sheet.append_row(data)
         
     except HttpError as error:
-        logging.error(f"An error occurred: {error}")
+        logging.error(f"An error google http occurred: {error}")
     except Exception as e:
-        logging.error(f"An unexpected error occurred: {e}")
+        logging.error(f"An unexpected error in storing data in google sheets: {e}")
+        raise GoogleSheetsException("Failed to store data in Google Sheets.")
+        

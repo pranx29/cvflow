@@ -31,5 +31,5 @@ async def upload_file_to_s3(bucket_name: str, bucket_path: str, file_name: str, 
         logging.error("AWS credentials not found.")
         raise S3UploadException("AWS credentials missing. Please check environment variables.")
     except Exception as e:
-        logging.error(f"Unexpected error: {e}")
+        logging.error(f"Unexpected error in uploading to s3: {e}")
         raise S3UploadException("Failed to upload file to S3.")
