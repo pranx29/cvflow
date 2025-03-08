@@ -86,26 +86,11 @@ def format_datetime_to_iso(datetime_obj: datetime) -> str:
     """
     return datetime_obj.strftime("%Y-%m-%dT%H:%M:%S")
 
-# Add hours to datetime
-def add_hours_to_datetime(datetime_obj: datetime, hours: int) -> datetime:
-    """
-    Add hours to a datetime object.
-    """
-    return datetime_obj + timedelta(hours=hours)
-
-# Add seconds to datetime
-def add_seconds_to_datetime(datetime_obj: datetime, seconds: int) -> datetime:
-    """
-    Add seconds to a datetime object.
-    """
-    return datetime_obj + timedelta(seconds=seconds)
-
-
 # generate unique name
-def generate_unique_name(name: str) -> str:
+def generate_unique_name(text: str) -> str:
     """
     Generate a unique name using the current timestamp and a UUID.
     """
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    unique_id = uuid.uuid4().hex[:12]
-    return f"{name}_{timestamp}_{unique_id}"
+    unique_id = uuid.uuid4().hex[:2]
+    return f"{text}_{timestamp}_{unique_id}"

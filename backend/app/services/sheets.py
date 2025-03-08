@@ -4,11 +4,11 @@ from googleapiclient.errors import HttpError
 from utils.exceptions import GoogleSheetsException
 from core.config import settings
 import logging
-from schemas.cv import CV
 
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
-def store_in_google_sheets(data, sheet_id):
+async def store_in_google_sheets(data, sheet_id):
+    """ Stores the provided data in a specified Google Sheets document. """
     try:
         # Authenticate and open Google Sheets
         credentials = Credentials.from_service_account_file(settings.GOOGLE_SHEETS_CREDENTIALS_FILE, scopes=SCOPES)

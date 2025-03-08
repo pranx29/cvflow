@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form, status, BackgroundTasks
 from fastapi.responses import JSONResponse
-import logging 
+import logging
 from core.config import settings
 from typing import Annotated
 from schemas.applicant import Applicant
@@ -9,16 +9,14 @@ from utils.exceptions import InvalidFileException
 from pydantic import ValidationError
 import asyncio
 from services.storage import upload_file_to_s3
-import io
-from utils.helper import save_file_in_memory, generate_unique_name, format_datetime_to_iso, convert_to_utc, add_seconds_to_datetime
-from services.cv_parser import parse_cv
 from io import BytesIO
+from utils.helper import save_file_in_memory, generate_unique_name, format_datetime_to_iso, convert_to_utc
+from services.cv_parser import parse_cv
 from services.sheets import store_in_google_sheets
 from services.webhook import send_webhook
 from services.email_scheduler import schedule_follow_up_email
 from datetime import datetime, timedelta
 import pytz
-
 
 
 logger = logging.getLogger(__name__)
@@ -87,7 +85,7 @@ async def submit_application(
 
 async def process_application(
     applicant: Applicant,
-    file_content: io.BytesIO,
+    file_content: BytesIO,
     file_name: str,
 ):
     """
@@ -111,26 +109,32 @@ async def process_application(
 
     # Store the extracted information in google sheets
     sheet_data = [f"{applicant.first_name} {applicant.last_name}"] + parsed_data.to_google_sheet_format() + [cv_url]
-    store_in_google_sheets(
-        data=sheet_data,
-        sheet_id=settings.GOOGLE_SHEET_ID,
+
+    # Run tasks concurrently
+    await asyncio.gather(
+        store_in_google_sheets(
+            data=sheet_data,
+            sheet_id=settings.GOOGLE_SHEET_ID,
+        ),
+        send_webhook(
+            headers={
+                "Content-Type": "application/json",
+                "X-Candidate-Email": settings.CANDIDATE_EMAIL,
+            },
+            payload=create_webhook_payload(applicant, cv_url, parsed_data),
+            url=settings.WEBHOOK_URL,
+        ),
+        schedule_follow_up_email_task(applicant=applicant),
     )
 
-    headers = {
-            "Content-Type": "application/json",
-            "X-Candidate-Email": settings.CANDIDATE_EMAIL
-        }
-    
-    payload = {
-        "cv_data": {
-            "personal_information": {
-                "name": f"{applicant.first_name} {applicant.last_name}",
-                "email": applicant.email,
-                "phone": applicant.phone,
-                "timezone": applicant.timezone,
-            },
-            "cv_url": "https://example.com/your_cv.pdf",
-        },
+    logger.info(f"Job application processed for {applicant.email}")
+
+def create_webhook_payload(applicant: Applicant, cv_url: str, parsed_data): 
+    """
+    Create the payload for the webhook.
+    """
+    return {
+        "cv_data": {**parsed_data.toJson(), "cv_url": cv_url},
         "metadata": {
             "applicant_name": f"{applicant.first_name} {applicant.last_name}",
             "email": applicant.email,
@@ -141,19 +145,20 @@ async def process_application(
         },
     }
 
-    # Send webhook notification
-    send_webhook(headers, payload, settings.WEBHOOK_URL)
-
-    # Schedule an email to the candidate
+async def schedule_follow_up_email_task(applicant: Applicant):
+    """
+    Schedule a follow-up email to the candidate.
+    """
     tz = pytz.timezone(applicant.timezone)
     schedule_name = generate_unique_name(f"follow_up_email_{applicant.email}").replace("@", "_")
     send_time = convert_to_utc(
-        datetime.now(tz) + timedelta(seconds=5),
+        datetime.now(tz) + timedelta(hours=settings.EMAIL_DELAY_HOURS),
     )
 
     schedule_follow_up_email(
-        email="pranavan2107@gmail.com",
+        email=settings.VERIFIED_RECIEVER_EMAIL,
         applicant_name=f"{applicant.first_name} {applicant.last_name}",
         schedule_name=schedule_name,
         send_time=format_datetime_to_iso(send_time),
     )
+

@@ -1,7 +1,6 @@
 import boto3
 import botocore.exceptions
 from datetime import datetime, timedelta
-import pytz
 import json
 from core.config import settings
 import logging
@@ -12,6 +11,7 @@ from utils.exceptions import EmailSchedulerException
 scheduler_client = boto3.client("scheduler", region_name=settings.AWS_REGION, aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
 
 def schedule_follow_up_email(applicant_name, email, schedule_name, send_time):
+    """ Schedules a follow-up email using AWS EventBridge Scheduler."""
     try:
         # Create the schedule
         scheduler_client.create_schedule(

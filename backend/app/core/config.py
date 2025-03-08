@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     # AWS Lambda Configuration
     LAMBDA_FUNCTION_ARN: str = Field(..., env="LAMBDA_FUNCTION_ARN")
     EVENTBRIDGE_SCHEDULER_ROLE_ARN: str = Field(..., env="EVENTBRIDGE_SCHEDULER_ROLE_ARN")
+    VERIFIED_RECIEVER_EMAIL: str = Field(..., env="VERIFIED_RECIEVER_EMAIL")
 
     # Google Sheets Configuration
     GOOGLE_SHEETS_CREDENTIALS_FILE: str = Field(..., env="GOOGLE_SHEETS_CREDENTIALS_FILE")
