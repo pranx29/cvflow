@@ -10,9 +10,10 @@ from pydantic import ValidationError
 import asyncio
 from services.storage import upload_file_to_s3
 import io
-from utils.helper import save_file_in_memory
+from utils.helper import save_file_in_memory, extract_personal_information, extract_json_from_text
 from services.cv_parser import parse_cv
 from io import BytesIO
+from services.sheets import store_in_google_sheets
 
 
 logger = logging.getLogger(__name__)
@@ -103,6 +104,14 @@ async def process_application(
     # Run both tasks concurrently
     cv_url, parsed_data = await asyncio.gather(upload_task, parse_task)
 
+    
+    sheet_data = [f"{applicant.first_name} {applicant.last_name}"] + parsed_data.to_google_sheet_format() + [cv_url]
+
+    store_in_google_sheets(
+        data=sheet_data,
+        sheet_id=settings.GOOGLE_SHEET_ID,
+    )
+    
     # Store the extracted information in google sheets
     # Send a notification to the webhook URL
     # Schedule an email to the candidate

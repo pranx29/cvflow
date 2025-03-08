@@ -9,6 +9,7 @@ import io
 from utils.helper import extract_text_from_pdf, extract_text_from_docx, extract_json_from_text
 from fastapi import HTTPException
 from utils.exceptions import CVParseException
+from schemas.cv import CV
 
 # Initialize OpenAI client
 client = OpenAI(
@@ -16,20 +17,55 @@ client = OpenAI(
     api_key=settings.OPENROUTER_API_KEY,  
 )
 
-prompt = f"""
-            Act as a data extraction assistant. Extract structured data from the given text and return a JSON object with only these sections:  
+prompt = """
+        Act as a data extraction assistant. Extract structured data from the given text and return a JSON object with only these sections and exact keys:  
 
-            - **personal_information**: Name, contact details, and any identifiers.  
-            - **education**: Degrees, institutions, and dates.  
-            - **qualifications**: Certifications, licenses, and credentials.  
-            - **skills**: Technical and soft skills.  
-            - **work_experience**: Job titles, companies, durations, and responsibilities. 
-            - **projects**: Titles, descriptions 
-
-            Include synonyms and related terms where applicable. Ensure proper JSON formatting.  
+        {
+        "personal_information": {
+            "name": "",
+            "email": "",
+            "phone": "",
+            "location": "",
+        },
+        "education": [
+            {
+            "degree": "",
+            "institution": "",
+            "start_date": "",
+            "end_date": ""
+            }
+        ],
+        "qualifications": [
+            {
+            "certification": "",
+            "issuer": "",
+            "date": ""
+            }
+        ],
+        "skills": {
+            "technical": [],
+            "soft": []
+        },
+        "work_experience": [
+            {
+            "job_title": "",
+            "company": "",
+            "start_date": "",
+            "end_date": "",
+            "responsibilities": []
+            }
+        ],
+        "projects": [
+            {
+            "title": "",
+            "description": [],
+            "technologies": []
+            }
+        ]
+        }
         """
 
-async def parse_cv(file_content: io.BytesIO, file_name: str) -> Dict:
+async def parse_cv(file_content: io.BytesIO, file_name: str) -> CV:
     """
     Parse the CV file and extract structured data using OpenAI API.
     """
@@ -52,9 +88,16 @@ async def parse_cv(file_content: io.BytesIO, file_name: str) -> Dict:
         )
 
         # Parse the response
+        print(response.choices[0].message.content)
         parsed_data = extract_json_from_text(response.choices[0].message.content)
-        return parsed_data
 
+        return CV(**parsed_data)
+    
+    except json.JSONDecodeError:
+        logging.error("Failed to decode JSON from OpenAI response.")
+        raise CVParseException(message="Failed to decode JSON from OpenAI response.")
+
+        # return parsed_data
     except Exception as e:
         logging.error(f"Error parsing CV: {e}")
         raise CVParseException(message="Error parsing CV file.")

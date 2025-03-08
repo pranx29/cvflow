@@ -55,6 +55,9 @@ def extract_json_from_text(text: str) -> dict:
     Extract JSON from a given text and return it as a dictionary.
     """
     try:
+        # Remove ``` json and ``` from the text
+        text = re.sub(r"```json|```", "", text).strip()
+
         # Find the first '{' and last '}'
         start = text.find('{')
         end = text.rfind('}')
@@ -67,3 +70,15 @@ def extract_json_from_text(text: str) -> dict:
     
     except (json.JSONDecodeError, ValueError) as e:
         raise ValueError("Invalid JSON format") from e
+    
+
+# Extract personal information from json
+def extract_personal_information(data):
+    personal_information = [
+        data.get("name", ""),
+        data.get("email", ""),
+        data.get("phone", ""),
+        data.get("location", ""),
+    ]
+    
+    return personal_information
