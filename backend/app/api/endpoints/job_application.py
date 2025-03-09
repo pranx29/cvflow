@@ -51,18 +51,18 @@ async def submit_application(
         logger.info(f"Received job application from {applicant.email}")
 
 
-        # Save CV file in memory
-        file_content, file_name = await save_file_in_memory(cv)
+        # # Save CV file in memory
+        # file_content, file_name = await save_file_in_memory(cv)
 
-        background_tasks.add_task(
-            process_application,
-            applicant=applicant,
-            file_content=file_content,
-            file_name=file_name,
-        )
+        # background_tasks.add_task(
+        #     process_application,
+        #     applicant=applicant,
+        #     file_content=file_content,
+        #     file_name=file_name,
+        # )
 
         return JSONResponse(
-            status_code=status.HTTP_202_ACCEPTED,
+            status_code=status.HTTP_201_CREATED,
             content={"message": "Your application has been submitted successfully."},
         )
     

@@ -4,9 +4,9 @@ const SubmitButton = () => {
     return (
         <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded"
+            className="w-full bg-primary text-white p-2 rounded-lg hover:bg-primary/90 transition-colors duration-200"
         >
-            Submit
+            Send Application
         </button>
     );
 };
