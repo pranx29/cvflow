@@ -92,7 +92,7 @@ const JobApplication = () => {
                     <div
                         className={`p-3 rounded ${
                             submitStatus.type === "success"
-                                ? "bg-green-100 text-green-800"
+                                ? "bg-success text-success-text"
                                 : "bg-red-100 text-red-800"
                         }`}
                     >

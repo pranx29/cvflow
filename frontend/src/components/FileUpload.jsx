@@ -10,7 +10,7 @@ const FileUpload = ({ control, name, label, errors }) => {
     return (
         <div className="space-y-2">
             <label htmlFor={name} className="block">
-                {label} <span className="text-error-text">*</span>
+                {label} <span className="text-error">*</span>
             </label>
             <Controller
                 control={control}
@@ -73,7 +73,7 @@ const FileUpload = ({ control, name, label, errors }) => {
                 )}
             />
             {errors[name] && (
-                <p className="text-sm text-error-text flex items-center mt-1">
+                <p className="text-sm text-error flex items-center mt-1">
                     <AlertCircle className="h-4 w-4 mr-1" />
                     {errors[name]?.message}
                 </p>

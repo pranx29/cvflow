@@ -1,7 +1,5 @@
-@import "tailwindcss";
-
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap");
-
+@import "tailwindcss";
 @theme {
     --font-sans: "IBM Plex Sans", sans-serif;
     --color-primary: hsl(250, 100%, 64%);
@@ -9,7 +7,7 @@
     --color-border: hsl(0, 0%, 85%);
     --color-text-primary: hsl(12, 0%, 0%);
     --color-text-secondary: hsl(150, 0%, 50%);
-    --color-success: hsl(140, 40%, 95%); 
-    --color-success-text: hsl(140, 80%, 30%); 
-    --color-error-text: hsl(0, 80%, 50%);
+    --color-success: hsl(140, 40%, 95%);
+    --color-success-text: hsl(140, 80%, 30%);
+    --color-error: hsl(0, 80%, 50%);
 }
