@@ -2,9 +2,9 @@ import boto3
 import botocore.exceptions
 from datetime import datetime, timedelta
 import json
-from core.config import settings
+from app.core.config import settings
 import logging
-from utils.exceptions import EmailSchedulerException
+from app.utils.exceptions import EmailSchedulerException
 
 
 # Initialize EventBridge Scheduler client

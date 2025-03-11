@@ -1,8 +1,8 @@
 from google.oauth2.service_account import Credentials
 import gspread
 from googleapiclient.errors import HttpError
-from utils.exceptions import GoogleSheetsException
-from core.config import settings
+from app.utils.exceptions import GoogleSheetsException
+from app.core.config import settings
 import logging
 
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]

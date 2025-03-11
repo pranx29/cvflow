@@ -4,10 +4,10 @@ import logging
 from typing import Dict
 from fastapi import HTTPException, UploadFile
 from openai import OpenAI
-from core.config import settings
-from schemas.cv import CV
-from utils.exceptions import CVParseException
-from utils.helper import extract_text_from_pdf, extract_text_from_docx, extract_json_from_text
+from app.core.config import settings
+from app.schemas.cv import CV
+from app.utils.exceptions import CVParseException
+from app.utils.helper import extract_text_from_pdf, extract_text_from_docx, extract_json_from_text
 
 # Initialize OpenAI client
 client = OpenAI(

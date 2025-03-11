@@ -1,5 +1,5 @@
 import logging
-from utils.exceptions import WebhookException
+from app.utils.exceptions import WebhookException
 import httpx
 
 async def send_webhook(headers: dict, payload: dict, url: str):

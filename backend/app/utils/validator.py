@@ -1,5 +1,5 @@
 from fastapi import UploadFile
-from utils.exceptions import InvalidFileException
+from app.utils.exceptions import InvalidFileException
 
 ALLOWED_FILE_TYPES = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"]
 MAX_FILE_SIZE = 5 * 1024 * 1024

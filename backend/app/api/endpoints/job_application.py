@@ -1,20 +1,20 @@
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form, status, BackgroundTasks
 from fastapi.responses import JSONResponse
 import logging
-from core.config import settings
+from app.core.config import settings
 from typing import Annotated
-from schemas.applicant import Applicant
-from utils.validator import validate_file
-from utils.exceptions import InvalidFileException
+from app.schemas.applicant import Applicant
+from app.utils.validator import validate_file
+from app.utils.exceptions import InvalidFileException
 from pydantic import ValidationError
 import asyncio
-from services.storage import upload_file_to_s3
+from app.services.storage import upload_file_to_s3
 from io import BytesIO
-from utils.helper import save_file_in_memory, generate_unique_name, format_datetime_to_iso, convert_to_utc
-from services.cv_parser import parse_cv
-from services.sheets import store_in_google_sheets
-from services.webhook import send_webhook
-from services.email_scheduler import schedule_follow_up_email
+from app.utils.helper import save_file_in_memory, generate_unique_name, format_datetime_to_iso, convert_to_utc
+from app.services.cv_parser import parse_cv
+from app.services.sheets import store_in_google_sheets
+from app.services.webhook import send_webhook
+from app.services.email_scheduler import schedule_follow_up_email
 from datetime import datetime, timedelta
 import pytz
 

@@ -1,9 +1,9 @@
 import boto3
 from botocore.exceptions import NoCredentialsError
-from core.config import settings
-from utils.helper import generate_unique_filename
+from app.core.config import settings
+from app.utils.helper import generate_unique_filename
 import logging
-from utils.exceptions import S3UploadException
+from app.utils.exceptions import S3UploadException
 import io
 
 # Initialize AWS S3 Client
