@@ -6,14 +6,16 @@ from app.core.config import settings
 # Create FastAPI app
 app = FastAPI(
     title="Job Application Processing Pipeline",
-    version="1.0.0",
+    docs_url=None,
+    redoc_url=None,
+    openapi_url=None,
 )
 
 
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[settings.CORS_ALLOWED_ORIGINS],
     allow_credentials=True,
     allow_methods=["POST"],
     allow_headers=["*"],

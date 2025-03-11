@@ -16,6 +16,7 @@ const JobApplication = () => {
         control,
         handleSubmit,
         formState: { errors },
+        reset,
     } = useForm({ resolver: yupResolver(schema) });
 
     const onSubmit = async (data) => {
@@ -39,6 +40,13 @@ const JobApplication = () => {
                     type: "success",
                     message: "Application submitted successfully!",
                 });
+
+                reset();
+
+                setTimeout(() => {
+                    setSubmitStatus(null);
+                }
+                , 5000);
             } else {
                 setSubmitStatus({
                     type: "error",

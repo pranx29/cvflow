@@ -40,6 +40,7 @@ class Settings(BaseSettings):
     # Webhook Configuration
     WEBHOOK_URL: str = Field(..., env="WEBHOOK_URL")
     CANDIDATE_EMAIL: str = Field(..., env="CANDIDATE_EMAIL")
+    WEBHOOK_STATUS: str = Field(..., env="WEBHOOK_STATUS")
 
     # Email Scheduling Configuration
     EMAIL_DELAY_HOURS: int = Field(24, env="EMAIL_DELAY_HOURS")

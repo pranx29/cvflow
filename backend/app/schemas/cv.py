@@ -1,9 +1,9 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from typing import List
 
 class PersonalInformation(BaseModel):
     name: str
-    email: EmailStr
+    email: str
     phone: str
     location: str
 
@@ -55,7 +55,7 @@ class CV(BaseModel):
         ]
     def toJson(self):
         return {
-            "personal_information": self.personal_information.model_dump(),
+            "personal_info": self.personal_information.model_dump(),
             "education": [edu.model_dump() for edu in self.education],
             "qualifications": [qual.model_dump() for qual in self.qualifications],
             "skills": self.skills.model_dump(),

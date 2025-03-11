@@ -51,15 +51,15 @@ async def submit_application(
         logger.info(f"Received job application from {applicant.email}")
 
 
-        # # Save CV file in memory
-        # file_content, file_name = await save_file_in_memory(cv)
+        # Save CV file in memory
+        file_content, file_name = await save_file_in_memory(cv)
 
-        # background_tasks.add_task(
-        #     process_application,
-        #     applicant=applicant,
-        #     file_content=file_content,
-        #     file_name=file_name,
-        # )
+        background_tasks.add_task(
+            process_application,
+            applicant=applicant,
+            file_content=file_content,
+            file_name=file_name,
+        )
 
         return JSONResponse(
             status_code=status.HTTP_201_CREATED,
@@ -134,12 +134,12 @@ def create_webhook_payload(applicant: Applicant, cv_url: str, parsed_data):
     Create the payload for the webhook.
     """
     return {
-        "cv_data": {**parsed_data.toJson(), "cv_url": cv_url},
+        "cv_data": {**parsed_data.toJson(), "cv_public_link": cv_url},
         "metadata": {
             "applicant_name": f"{applicant.first_name} {applicant.last_name}",
             "email": applicant.email,
             "phone": applicant.phone,
-            "status": "testing",
+            "status": settings.WEBHOOK_STATUS,
             "cv_processed": True,
             "processed_timestamp": datetime.now().isoformat(),
         },
@@ -156,6 +156,7 @@ async def schedule_follow_up_email_task(applicant: Applicant):
     )
 
     schedule_follow_up_email(
+        # Note: Using a default email address for receiving the email since SES requires email addresses to be verified before sending until production access is granted.
         email=settings.VERIFIED_RECIEVER_EMAIL,
         applicant_name=f"{applicant.first_name} {applicant.last_name}",
         schedule_name=schedule_name,
